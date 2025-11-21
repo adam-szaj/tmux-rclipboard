@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-RCLIP_BIN=${RCLIP_BIN:-clipctl2}
+RCLIP_BIN=${RCLIP_BIN:-rclipctl}
 RCLIP_TOPIC=${RCLIP_TOPIC:-c}
 RCLIP_ENCODING=${RCLIP_ENCODING:-base64}
 RCLIP_APP=${RCLIP_APP:-tmux}
@@ -20,7 +20,7 @@ if [ -r "$CONF_FILE" ]; then
 fi
 
 if [ -n "$UDS" ]; then
-  exec "$RCLIP_BIN" publish -c --encoding "$RCLIP_ENCODING" --uds "$UDS" --app "$RCLIP_APP"
+  exec "$RCLIP_BIN" publish -t "$RCLIP_TOPIC" --encoding "$RCLIP_ENCODING" --uds "$UDS" --app "$RCLIP_APP"
 else
-  exec "$RCLIP_BIN" publish -c --encoding "$RCLIP_ENCODING" --host "$HOST" --port "$PORT" --app "$RCLIP_APP"
+  exec "$RCLIP_BIN" publish -t "$RCLIP_TOPIC" --encoding "$RCLIP_ENCODING" --host "$HOST" --port "$PORT" --app "$RCLIP_APP"
 fi

@@ -3,13 +3,13 @@
 A minimal tmux plugin that integrates rclipboard with tmux copy/paste and shows rclipboard health in the status bar.
 
 Features
-- Copy current tmux selection to rclipboard (topic c/p/s) via `clipctl2`.
+- Copy current tmux selection to rclipboard (topic c/p/s) via `rclipctl`.
 - Paste the latest value from rclipboard into the current pane.
 - Optional status-right segment with health of the rclipboard service (ok/xsel/proxy).
 
 Requirements
 - rclipboard HTTP service running (see top-level README).
-- `clipctl2` available on PATH.
+- `rclipctl` available on PATH.
 - `curl`, `jq`, and `xxd` (for hex decode) installed.
 
 Install (TPM)
@@ -29,7 +29,7 @@ Options (tmux @options)
 - `@rclip_encoding` (default: base64)
 - `@rclip_app` (default: tmux)
 - `@rclip_status` (default: on) — enable status segment
-- `@rclip_bin` (default: clipctl2)
+- `@rclip_bin` (default: rclipctl)
 
 Key Bindings (defaults)
 - Copy (copy-mode-vi): `y` → publish selection to rclipboard

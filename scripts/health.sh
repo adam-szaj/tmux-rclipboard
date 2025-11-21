@@ -16,9 +16,9 @@ if [ -r "$CONF_FILE" ]; then
 fi
 
 if [ -n "$UDS" ]; then
-  out=$(clipctl2 health --uds "$UDS" 2>/dev/null || true)
+  out=$(rclipctl health --uds "$UDS" 2>/dev/null || true)
 else
-  out=$(clipctl2 health --host "$HOST" --port "$PORT" 2>/dev/null || true)
+  out=$(rclipctl health --host "$HOST" --port "$PORT" 2>/dev/null || true)
 fi
 if [ -z "$out" ]; then
   printf '#[fg=red]down#[default]'
