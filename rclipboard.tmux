@@ -8,6 +8,7 @@ tmux_option() {
 RCLIP_HOST=$(tmux_option '@rclip_host'); : "${RCLIP_HOST:=127.0.0.1}"
 RCLIP_PORT=$(tmux_option '@rclip_port'); : "${RCLIP_PORT:=8989}"
 RCLIP_TOPIC=$(tmux_option '@rclip_topic'); : "${RCLIP_TOPIC:=c}"
+RCLIP_UDS=$(tmux_option '@rclip_uds'); : "${RCLIP_UDS:=${XDG_RUNTIME_DIR}/rclipboard.sock}"
 RCLIP_ENCODING=$(tmux_option '@rclip_encoding'); : "${RCLIP_ENCODING:=base64}"
 RCLIP_APP=$(tmux_option '@rclip_app'); : "${RCLIP_APP:=tmux}"
 RCLIP_STATUS=$(tmux_option '@rclip_status'); : "${RCLIP_STATUS:=on}"
@@ -25,9 +26,9 @@ tmux set -gq @rclip_health_cmd "${SCRIPT_DIR}/scripts/health.sh"
 
 # Default key bindings (customize by overriding in .tmux.conf)
 # Copy current selection to rclipboard (clipboard topic)
-tmux bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "RCLIP_TOPIC=${RCLIP_TOPIC} RCLIP_ENCODING=${RCLIP_ENCODING} RCLIP_APP=${RCLIP_APP} ${SCRIPT_DIR}/scripts/publish.sh > /dev/null"
-# Paste from rclipboard into current pane
-tmux bind-key P run-shell "RCLIP_TOPIC=${RCLIP_TOPIC} RCLIP_ENCODING=${RCLIP_ENCODING} ${SCRIPT_DIR}/scripts/paste.sh"
+
+tmux bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "RCLIP_TOPIC=${RCLIP_TOPIC} RCLIP_ENCODING=${RCLIP_ENCODING} RCLIP_APP=${RCLIP_APP} ${SCRIPT_DIR}/scripts/publish.sh"
+tmux bind-key ] run-shell "RCLIP_TOPIC=${RCLIP_TOPIC} RCLIP_ADDR=${RCLIP_ADDR} RCLIP_PORT=${RCLIP_PORT} RCLIP_UDS=${RCLIP_UDS} RCLIP_ENCODING=${RCLIP_ENCODING} ${SCRIPT_DIR}/scripts/paste.sh"
 
 # Status bar segment (optional)
 if [ "${RCLIP_STATUS}" = "on" ]; then
@@ -39,4 +40,3 @@ if [ "${RCLIP_STATUS}" = "on" ]; then
     tmux set -g status-right "${seg} | ${current}"
   fi
 fi
-
