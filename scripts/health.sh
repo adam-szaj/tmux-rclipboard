@@ -1,31 +1,18 @@
 #!/usr/bin/env bash
-set -euo pipefail
-
-HOST=${RCLIP_HOST:-127.0.0.1}
-PORT=${RCLIP_PORT:-8989}
-UDS=${RCLIP_UDS:-}
+set -uo pipefail
 
 # Load shared config
-CONF_FILE=${RCLIP_CONF:-"$HOME/.config/rclipboard/env"}
-if [ -r "$CONF_FILE" ]; then
-  # shellcheck disable=SC1090
-  . "$CONF_FILE"
-  if [ -z "$UDS" ] && [ -n "${RCLIPBOARD_BIND_UDS:-}" ]; then UDS="$RCLIPBOARD_BIND_UDS"; fi
-  if [ -z "${HOST:-}" ] && [ -n "${RCLIPBOARD_BIND_ADDR:-}" ]; then HOST="$RCLIPBOARD_BIND_ADDR"; fi
-  if [ -z "${PORT:-}" ] && [ -n "${RCLIPBOARD_BIND_PORT:-}" ]; then PORT="$RCLIPBOARD_BIND_PORT"; fi
-fi
+RCLIP_BIN=${RCLIP_BIN:-rclipctl}
+RCLIP_TOPIC=${RCLIP_TOPIC:-c}
 
-if [ -n "$UDS" ]; then
-  out=$(rclipctl health --uds "$UDS" 2>/dev/null || true)
-else
-  out=$(rclipctl health --host "$HOST" --port "$PORT" 2>/dev/null || true)
-fi
+out=$(${RCLIP_BIN} health 2>&1 || true)
+
 if [ -z "$out" ]; then
   printf '#[fg=red]down#[default]'
   exit 0
 fi
 ok=$(printf '%s' "$out" | jq -r '.ok')
-xok=$(printf '%s' "$out" | jq -r '.xsel_ok')
+xok=$(printf '%s' "$out" | jq -r '.xsel_good')
 pc=$(printf '%s' "$out" | jq -r '.proxy_connected')
 
 if [ "$ok" = "true" ]; then
