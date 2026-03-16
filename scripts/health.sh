@@ -29,6 +29,4 @@ fi
 printf ' '
 if [ "$pc" = "true" ]; then
   printf 'pxy:#[fg=green]✓#[default]'
-else
-  printf 'pxy:#[fg=colour244]-#[default]'
 fi
