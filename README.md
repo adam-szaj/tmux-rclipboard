@@ -32,7 +32,7 @@ Options (tmux @options)
 - `@rclip_bin` (default: rclipctl)
 
 Key Bindings (defaults)
-- Copy (copy-mode-vi): `y` → publish selection to rclipboard
+- Copy (copy-mode-vi): `y` → copy selection to rclipboard
 - Paste: `P` → fetch from rclipboard and paste into pane
 
 Status Bar

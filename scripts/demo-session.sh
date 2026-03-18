@@ -15,10 +15,10 @@ sess="rclip_demo_$$"
 # Create a detached session
 tmux new-session -d -s "$sess" -x 120 -y 30 "bash -lc 'echo rclip-demo; sleep 0.1'"
 
-# Publish a demo message via plugin script
+# Copy a demo message via plugin script
 msg="HelloFromDemo"
 tmux run-shell -t "$sess":0.0 \
-  "printf '%s' '$msg' | RCLIP_HOST=$HOST RCLIP_PORT=$PORT RCLIP_TOPIC=$TOPIC RCLIP_ENCODING=base64 RCLIP_APP=tmux '$PLUG_DIR/scripts/publish.sh'"
+  "printf '%s' '$msg' | RCLIP_HOST=$HOST RCLIP_PORT=$PORT RCLIP_TOPIC=$TOPIC RCLIP_ENCODING=base64 RCLIP_APP=tmux '$PLUG_DIR/scripts/copy.sh'"
 
 sleep 0.3
 

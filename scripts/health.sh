@@ -5,7 +5,7 @@ set -uo pipefail
 RCLIP_BIN=${RCLIP_BIN:-rclipctl}
 RCLIP_TOPIC=${RCLIP_TOPIC:-c}
 
-out=$(${RCLIP_BIN} health 2>&1 || true)
+out=$(${RCLIP_BIN} health --transport fifo 2>&1 || true)
 
 if [ -z "$out" ]; then
   printf '#[fg=red]down#[default]'
@@ -16,17 +16,17 @@ xok=$(printf '%s' "$out" | jq -r '.xsel_good')
 pc=$(printf '%s' "$out" | jq -r '.proxy_connected')
 
 if [ "$ok" = "true" ]; then
-  printf '#[fg=green]up#[default]'
+  printf '#[fg=green]✔#[default]'
 else
-  printf '#[fg=red]down#[default]'
+  printf '#[fg=red]✗#[default]'
 fi
 printf ' '
 if [ "$xok" = "true" ]; then
-  printf 'xsel:#[fg=green]✓#[default]'
+  printf 'Xsel:#[fg=green]✔#[default]'
 else
-  printf 'xsel:#[fg=yellow]!#[default]'
+  printf 'Xsel:#[fg=yellow]✗#[default]'
 fi
 printf ' '
 if [ "$pc" = "true" ]; then
-  printf 'pxy:#[fg=green]✓#[default]'
+  printf 'pxy:#[fg=green]✔#[default]'
 fi
