@@ -2,8 +2,7 @@
 set -euo pipefail
 
 PLUG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-HOST=${RCLIP_HOST:-127.0.0.1}
-PORT=${RCLIP_PORT:-8989}
+# Server endpoint is configured via rclipctl (RCLIPCTL_ENDPOINT env or config.toml).
 TOPIC=${RCLIP_TOPIC:-c}
 
 if ! command -v tmux >/dev/null 2>&1; then
@@ -18,13 +17,13 @@ tmux new-session -d -s "$sess" -x 120 -y 30 "bash -lc 'echo rclip-demo; sleep 0.
 # Copy a demo message via plugin script
 msg="HelloFromDemo"
 tmux run-shell -t "$sess":0.0 \
-  "printf '%s' '$msg' | RCLIP_HOST=$HOST RCLIP_PORT=$PORT RCLIP_TOPIC=$TOPIC RCLIP_ENCODING=base64 RCLIP_APP=tmux '$PLUG_DIR/scripts/copy.sh'"
+  "printf '%s' '$msg' | RCLIP_TOPIC=$TOPIC RCLIP_APP=tmux '$PLUG_DIR/scripts/copy.sh'"
 
 sleep 0.3
 
 # Paste via plugin script
 tmux run-shell -t "$sess":0.0 \
-  "RCLIP_HOST=$HOST RCLIP_PORT=$PORT RCLIP_TOPIC=$TOPIC RCLIP_ENCODING=hex '$PLUG_DIR/scripts/paste.sh'"
+  "RCLIP_TOPIC=$TOPIC '$PLUG_DIR/scripts/paste.sh'"
 
 sleep 0.3
 

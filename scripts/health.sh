@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
-# Load shared config
 RCLIP_BIN=${RCLIP_BIN:-rclipctl}
-RCLIP_TOPIC=${RCLIP_TOPIC:-c}
+RCLIP_STATUS_FORMAT=${RCLIP_STATUS_FORMAT:-normal}
 
 out=$(${RCLIP_BIN} health 2>&1 || true)
 
@@ -11,25 +10,43 @@ if [ -z "$out" ]; then
   printf '#[fg=red]down#[default]'
   exit 0
 fi
+
 ok=$(printf '%s' "$out" | jq -r '.ok')
-xok=$(printf '%s' "$out" | jq -r '.xsel_good')
-pc=$(printf '%s' "$out" | jq -r '.proxy_good')
 
 if [ "$ok" = "true" ]; then
   printf '#[fg=green]✔#[default]'
 else
   printf '#[fg=red]✗#[default]'
 fi
+
+if [ "$RCLIP_STATUS_FORMAT" = "minimal" ]; then
+  printf ' '
+  exit 0
+fi
+
+xok=$(printf '%s' "$out" | jq -r '.xsel_good')
+proxy_enabled=$(printf '%s' "$out" | jq -r '.proxy_enabled')
+proxy_good=$(printf '%s' "$out" | jq -r '.proxy_good')
+
 printf ' '
 if [ "$xok" = "true" ]; then
-  printf 'Xsel:#[fg=green]✔#[default]'
+  printf 'xsel:#[fg=green]✔#[default]'
 else
-  printf 'Xsel:#[fg=yellow]✗#[default]'
+  printf 'xsel:#[fg=yellow]✗#[default]'
 fi
 printf ' '
-if [ "$pc" = "true" ]; then
+
+if [ "$proxy_enabled" = "false" ]; then
+  printf 'pxy:#[fg=colour244]—#[default]'
+elif [ "$proxy_good" = "true" ]; then
   printf 'pxy:#[fg=green]✔#[default]'
 else
-  printf 'pxy:#[fg=green]✗#[default]'
+  printf 'pxy:#[fg=red]✗#[default]'
 fi
+
+if [ "$RCLIP_STATUS_FORMAT" = "full" ]; then
+  topics=$(${RCLIP_BIN} topics 2>/dev/null | jq -r '.topics | length' 2>/dev/null || echo '?')
+  printf ' topics:#[fg=colour250]%s#[default]' "$topics"
+fi
+
 printf ' '
