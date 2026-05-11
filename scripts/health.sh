@@ -1,17 +1,23 @@
 #!/usr/bin/env bash
 set -uo pipefail
 
+. ~/.bash_setup_path
+
 RCLIP_BIN=${RCLIP_BIN:-rclipctl}
 RCLIP_STATUS_FORMAT=${RCLIP_STATUS_FORMAT:-normal}
 
-out=$(${RCLIP_BIN} health 2>&1 || true)
+out=$(${RCLIP_BIN} health 2>/dev/null || true)
 
 if [ -z "$out" ]; then
   printf '#[fg=red]down#[default]'
   exit 0
 fi
 
-ok=$(printf '%s' "$out" | jq -r '.ok')
+ok=$(printf '%s' "$out" | jq -r '.ok' 2>/dev/null || echo "false")
+if [ "$ok" != "true" ] && [ "$ok" != "false" ]; then
+  printf '#[fg=red]down#[default]'
+  exit 0
+fi
 
 if [ "$ok" = "true" ]; then
   printf '#[fg=green]✔#[default]'
@@ -45,8 +51,11 @@ else
 fi
 
 if [ "$RCLIP_STATUS_FORMAT" = "full" ]; then
-  topics=$(${RCLIP_BIN} topics 2>/dev/null | jq -r '.topics | length' 2>/dev/null || echo '?')
-  printf ' topics:#[fg=colour250]%s#[default]' "$topics"
+  mon=$(${RCLIP_BIN} monitor status --format tmux 2>/dev/null || true)
+  if [ -n "$mon" ]; then
+    printf '%s' "$mon"
+    exit 0
+  fi
 fi
 
 printf ' '
