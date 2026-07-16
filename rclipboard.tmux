@@ -22,6 +22,20 @@ main() {
     tmux set -gq @rclip_paste_cmd "${SCRIPT_DIR}/scripts/paste.sh"
     tmux set -gq @rclip_health_cmd "${SCRIPT_DIR}/scripts/health.sh"
 
+    # Encryption mode for *-default commands (user sets in .tmux.conf).
+    tmux set -gq @rclip_encrypt off
+
+    # Per-mode copy/paste commands (bind these yourself; defaults unchanged).
+    local envp="RCLIP_BIN=${RCLIP_BIN} RCLIP_TOPIC=${RCLIP_TOPIC} RCLIP_APP=${RCLIP_APP}"
+    tmux set -gq @rclip_copy_clear_cmd      "${envp} ${SCRIPT_DIR}/scripts/copy.sh --mode clear"
+    tmux set -gq @rclip_copy_encrypted_cmd  "${envp} ${SCRIPT_DIR}/scripts/copy.sh --mode encrypted"
+    tmux set -gq @rclip_copy_default_cmd    "${envp} ${SCRIPT_DIR}/scripts/copy.sh --mode default"
+    tmux set -gq @rclip_paste_clear_cmd     "${envp} ${SCRIPT_DIR}/scripts/paste.sh --mode clear"
+    tmux set -gq @rclip_paste_encrypted_cmd "${envp} ${SCRIPT_DIR}/scripts/paste.sh --mode encrypted"
+    tmux set -gq @rclip_paste_default_cmd   "${envp} ${SCRIPT_DIR}/scripts/paste.sh --mode default"
+    tmux set -gq @rclip_register_cmd        "RCLIP_BIN=${RCLIP_BIN} ${SCRIPT_DIR}/scripts/register.sh"
+    tmux set -gq @rclip_unregister_cmd      "RCLIP_BIN=${RCLIP_BIN} ${SCRIPT_DIR}/scripts/unregister.sh"
+
     # Default key bindings (customize by overriding in .tmux.conf)
     # Copy current selection to rclipboard (clipboard topic)
     tmux unbind-key ]
