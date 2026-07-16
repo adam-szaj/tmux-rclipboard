@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Test double: append the full argv (one per line, NUL-safe enough for tests)
+# to $FAKE_LOG and consume stdin so pipes don't break.
+printf '%s\n' "$*" >> "$FAKE_LOG"
+cat >/dev/null 2>&1 || true
+# For `get`, emit canned content so paste tests can inspect it.
+if [ "${1:-}" = "get" ]; then printf 'FAKE_CONTENT'; fi
+exit 0
