@@ -33,4 +33,12 @@ assert_contains "$out" "--fetch-keys" "encrypted adds --fetch-keys"
 out="$(run_copy '')"
 assert_not_contains "$out" "-E" "no-arg defaults to clear"
 
+# Regression: --mode without value should exit 2, not crash with shift error
+tmp="$(mktemp)"
+exit_code=0
+FAKE_LOG="$tmp" PATH="$DIR:$PATH" RCLIP_BIN=fake-rclipctl \
+    bash "$PLUGIN_DIR/scripts/copy.sh" --mode </dev/null || exit_code=$?
+rm -f "$tmp"
+if [ $exit_code -eq 2 ]; then echo "ok: --mode without value exits 2"; else echo "FAIL: --mode without value exits $exit_code (expected 2)"; fail=1; fi
+
 exit $fail

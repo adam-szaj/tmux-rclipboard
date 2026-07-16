@@ -8,7 +8,9 @@ RCLIP_APP=${RCLIP_APP:-tmux}
 mode=clear
 while [ $# -gt 0 ]; do
     case "$1" in
-        --mode) mode="${2:-clear}"; shift 2 ;;
+        --mode)
+            [ $# -ge 2 ] || { echo "usage: copy.sh [--mode clear|encrypted|default]" >&2; exit 2; }
+            mode="$2"; shift 2 ;;
         *) echo "usage: copy.sh [--mode clear|encrypted|default]" >&2; exit 2 ;;
     esac
 done
