@@ -5,10 +5,12 @@ tmux_option() {
     tmux show-option -gqv "$1"
 }
 
+rclip_bin=~/.config/rclipboard/bin/rclipctl
+RCLIP_BIN=$(tmux_option '@rclip_bin'); : "${RCLIP_BIN:=${rclip_bin}}"
 RCLIP_TOPIC=$(tmux_option '@rclip_topic'); : "${RCLIP_TOPIC:=c}"
 RCLIP_APP=$(tmux_option '@rclip_app'); : "${RCLIP_APP:=tmux}"
 RCLIP_STATUS=$(tmux_option '@rclip_status'); : "${RCLIP_STATUS:=on}"
-RCLIP_BIN=$(tmux_option '@rclip_bin'); : "${RCLIP_BIN:=rclipctl}"
+# RCLIP_BIN=$(tmux_option '@rclip_bin'); : "${RCLIP_BIN:=rclipctl}"
 RCLIP_STATUS_FORMAT=$(tmux_option '@rclip_status_format'); : "${RCLIP_STATUS_FORMAT:=normal}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
