@@ -6,11 +6,14 @@ tmux_option() {
 }
 
 rclip_bin=~/.config/rclipboard/bin/rclipctl
-RCLIP_BIN=$(tmux_option '@rclip_bin'); : "${RCLIP_BIN:=${rclip_bin}}"
-RCLIP_TOPIC=$(tmux_option '@rclip_topic'); : "${RCLIP_TOPIC:=c}"
-RCLIP_APP=$(tmux_option '@rclip_app'); : "${RCLIP_APP:=tmux}"
-RCLIP_STATUS=$(tmux_option '@rclip_status'); : "${RCLIP_STATUS:=on}"
-# RCLIP_BIN=$(tmux_option '@rclip_bin'); : "${RCLIP_BIN:=rclipctl}"
+# basic | reach
+# RCLIP_FONT_STYLE=$(tmux_option '@rclip_font_style');
+# : "${RCLIP_FONT_STYLE:-basic}"
+RCLIP_BIN=$(tmux_option '@rclip_bin'); : "${RCLIP_BIN:-${rclip_bin}}"
+RCLIP_TOPIC=$(tmux_option '@rclip_topic'); : "${RCLIP_TOPIC:-c}"
+RCLIP_APP=$(tmux_option '@rclip_app'); : "${RCLIP_APP:-tmux}"
+RCLIP_STATUS=$(tmux_option '@rclip_status'); : "${RCLIP_STATUS:-on}"
+RCLIP_BIN=$(tmux_option '@rclip_bin'); : "${RCLIP_BIN:=rclipctl}"
 RCLIP_STATUS_FORMAT=$(tmux_option '@rclip_status_format'); : "${RCLIP_STATUS_FORMAT:=normal}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -56,7 +59,7 @@ main() {
         # Prepend health to status-right if not already present
         current=$(tmux show-option -gqv status-right)
         if [[ "$current" != *"health.sh"* ]]; then
-            seg="#[fg=colour244]📋:#[default]#(RCLIP_BIN=${RCLIP_BIN} RCLIP_STATUS_FORMAT=${RCLIP_STATUS_FORMAT} ${SCRIPT_DIR}/scripts/health.sh)"
+            seg="#(RCLIP_BIN=${RCLIP_BIN} RCLIP_STATUS_FORMAT=${RCLIP_STATUS_FORMAT} ${SCRIPT_DIR}/scripts/health.sh)"
             tmux set -g status-right "${seg}${current}"
         fi
     fi
