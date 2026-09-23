@@ -32,6 +32,8 @@ Options (tmux @options)
     full     — normal + active topic count
 - `@rclip_bin` (default: rclipctl)     — path to rclipctl binary
 
+`@rclip_sticky_buffer` (default: `default`) selects the note buffer used by the sticky-note picker.
+
 Key Bindings (defaults)
 - Copy (copy-mode-vi): `y` → copy selection to rclipboard
 - Paste (normal mode): `]` → fetch from rclipboard and paste into pane
@@ -75,6 +77,19 @@ bind-key R   run-shell "#{@rclip_register_cmd}"
 
 Encryption requires a keypair and a registered public key — see the main
 rclipboard docs (`rclipctl keygen`, then `@rclip_register_cmd`).
+
+Sticky-note picker
+- Requires `fzf` and `jq`; the picker opens in a tmux popup and lists notes from `@rclip_sticky_buffer`.
+- `@rclip_sticky_paste_cmd` opens the picker and pastes the selected note into the active pane.
+- `@rclip_sticky_print_cmd` opens the picker and displays the selected note in the popup (`less` when installed).
+
+Example bindings:
+
+```tmux
+bind-key M-s run-shell "#{@rclip_sticky_paste_cmd}"
+bind-key M-S run-shell "#{@rclip_sticky_print_cmd}"
+set -g @rclip_sticky_buffer 'work'
+```
 
 Status Bar
 - normal:  `📋: ✔ xsel:✗ pxy:—`

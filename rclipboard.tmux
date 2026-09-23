@@ -15,17 +15,20 @@ RCLIP_APP=$(tmux_option '@rclip_app'); : "${RCLIP_APP:-tmux}"
 RCLIP_STATUS=$(tmux_option '@rclip_status'); : "${RCLIP_STATUS:-on}"
 RCLIP_BIN=$(tmux_option '@rclip_bin'); : "${RCLIP_BIN:=rclipctl}"
 RCLIP_STATUS_FORMAT=$(tmux_option '@rclip_status_format'); : "${RCLIP_STATUS_FORMAT:=normal}"
+RCLIP_BUFFER=$(tmux_option '@rclip_sticky_buffer'); : "${RCLIP_BUFFER:=default}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Export env for scripts
-export RCLIP_TOPIC RCLIP_APP RCLIP_BIN RCLIP_STATUS_FORMAT
+export RCLIP_TOPIC RCLIP_APP RCLIP_BIN RCLIP_STATUS_FORMAT RCLIP_BUFFER
 
 main() {
     # Define commands
     tmux set -gq @rclip_copy_cmd "${SCRIPT_DIR}/scripts/copy.sh"
     tmux set -gq @rclip_paste_cmd "${SCRIPT_DIR}/scripts/paste.sh"
     tmux set -gq @rclip_health_cmd "${SCRIPT_DIR}/scripts/health.sh"
+    tmux set -gq @rclip_sticky_paste_cmd "RCLIP_BIN=${RCLIP_BIN} RCLIP_BUFFER=${RCLIP_BUFFER} ${SCRIPT_DIR}/scripts/sticky.sh --mode paste"
+    tmux set -gq @rclip_sticky_print_cmd "RCLIP_BIN=${RCLIP_BIN} RCLIP_BUFFER=${RCLIP_BUFFER} ${SCRIPT_DIR}/scripts/sticky.sh --mode print"
 
     # Encryption mode for *-default commands (user sets in .tmux.conf).
     tmux set -gq @rclip_encrypt off
